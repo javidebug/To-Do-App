@@ -14,14 +14,12 @@ class AddFormPageViewModel: ObservableObject {
         ToDoModel(text: "Item 2"),
         ToDoModel(text: "Item 3"),
         ToDoModel(text: "Item 4"),
-        ToDoModel(text: "Item 5"),
-        ToDoModel(text: "Item 6"),
-        ToDoModel(text: "Item 7")
+        ToDoModel(text: "Item 5")
     ]
     @Published var replacementIndex: Int = 0
 
     func addItem(text: String){
-        let indicesToReplace = [0, 1, 2, 4]
+        let indicesToReplace = [0, 1, 2, 3, 4]
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         let target = indicesToReplace[replacementIndex % indicesToReplace.count]
         if items.indices.contains(target) {
@@ -29,4 +27,10 @@ class AddFormPageViewModel: ObservableObject {
         }
         replacementIndex = (replacementIndex + 1) % indicesToReplace.count
     }
+    
+    func deleteItem(item: IndexSet) {
+        items.remove(atOffsets: item)
+    }
+
 }
+

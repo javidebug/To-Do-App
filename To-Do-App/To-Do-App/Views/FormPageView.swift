@@ -15,10 +15,10 @@ struct FormPageView: View {
             ForEach(vm.items){ list in
                 Text(list.text)
             }
+            .onDelete(perform: vm.deleteItem)
         }
     }
 }
-
 
 #Preview {
 //    FormPageView()
