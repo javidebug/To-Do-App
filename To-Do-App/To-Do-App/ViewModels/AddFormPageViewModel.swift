@@ -1,3 +1,4 @@
+
 //
 //  AddFormPageViewModel.swift
 //  To-Do-App
@@ -9,6 +10,8 @@ import SwiftUI
 import Combine
 
 class AddFormPageViewModel: ObservableObject {
+    private let itemsKey = "todo_items"
+    private let replacementIndexKey = "todo_replacement_index"
     private let defaultItemTexts = [
         "Item 1",
         "Item 2",
@@ -22,6 +25,7 @@ class AddFormPageViewModel: ObservableObject {
 
     init() {
         items = defaultItemTexts.map { ToDoModel(text: $0) }
+        loadSavedItems()
     }
 
     func addItem(text: String){
@@ -31,12 +35,31 @@ class AddFormPageViewModel: ObservableObject {
             items[target] = ToDoModel(text: text)
         }
         replacementIndex = (replacementIndex + 1) % defaultItemTexts.count
+        saveItems()
     }
     
     func deleteItem(item: IndexSet) {
         for index in item where defaultItemTexts.indices.contains(index) {
             items[index] = ToDoModel(text: defaultItemTexts[index])
         }
+        saveItems()
+    }
+
+    private func loadSavedItems() {
+        if let savedTexts = UserDefaults.standard.stringArray(forKey: itemsKey),
+           savedTexts.count == defaultItemTexts.count {
+            items = savedTexts.map { ToDoModel(text: $0) }
+        }
+
+        let savedIndex = UserDefaults.standard.integer(forKey: replacementIndexKey)
+        if defaultItemTexts.indices.contains(savedIndex) {
+            replacementIndex = savedIndex
+        }
+    }
+
+    private func saveItems() {
+        UserDefaults.standard.set(items.map(\.text), forKey: itemsKey)
+        UserDefaults.standard.set(replacementIndex, forKey: replacementIndexKey)
     }
 
 }
